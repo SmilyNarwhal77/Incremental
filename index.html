@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style>
+            .wholeappwrapper{
+                margin: 10px;
+                padding: 10px;
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wholeappwrapper">
+            <main class="appwrapper">
+                <div class="topdisplay" id="addcurrency">
+                    <!--<div class="maincurrencydisplay">
+                        <span id="MainCurrencyName">{MainCurrencyName}</span>: 
+                        <span id="maincurrencydisplay">
+                            0
+                        </span>
+                    </div>
+                    <div class="maincurrencyps"> (+
+                            <span id="maincurrencyps">
+                                5
+                            </span>
+                        per second)
+                    </div>-->
+                </div>
+                <div class="upgrades" id="upgrades">
+
+                </div>
+            </main>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded",  () => {
+                window.currencies = [
+                    {
+                        name: "Main Currency", 
+                        amount: 0, 
+                        persecond: 5, 
+                        id: 0, 
+                        upgrades: [
+                            {
+                                devname: "a1",
+                                displayname: "The First Upgrade!",
+                                cost: 10, 
+                                amount: 0, 
+                                extracost: function() { 
+                                    return Math.floor(Math.sqrt(parseInt((this.amount == 0) ? 0 : (this.amount) ** 3) + 8))
+                                }, 
+                                uid: 0,
+                                baseid: 0,
+                                effect: function() {
+                                    window.currencies[0].persecond++;
+                                }
+                            }
+                        ],
+                    }
+                ]
+                function UI2() {
+                    window.currencies.forEach((currency) => {
+                        currency.upgrades.forEach((upgrade) => {
+                            const upgradebtn = document.createElement("button");
+                            upgradebtn.onclick = () => {
+                                BuyUpgrade(upgrade.uid, upgrade.baseid);
+                            };
+                            let newcost = upgrade.cost + upgrade.extracost();
+                            upgradebtn.textContent = upgrade.displayname + "\nCosts: " + newcost + "\nYou own: " + upgrade.amount;
+                            upgradebtn.id = upgrade.devname;
+                            document.getElementById("upgrades").append(upgradebtn); 
+                        });
+                        let amt = currency.name + "amt";
+                        let ps = currency.name + "ps";
+                        let newcurrencycontainer = document.createElement("div");
+                        let newcurrencyspanamt = document.createElement("span");
+                        let newcurrencyspanps = document.createElement("span");
+                        newcurrencyspanamt.textContent = currency.amount;
+                        newcurrencyspanps.textContent = currency.persecond;
+                        newcurrencyspanamt.id = amt;
+                        newcurrencyspanps.id = ps;
+                        newcurrencycontainer.appendChild(document.createTextNode(currency.name + ": "));
+                        newcurrencycontainer.appendChild(newcurrencyspanamt);
+                        newcurrencycontainer.appendChild(document.createElement("br"));
+                        newcurrencycontainer.appendChild(document.createTextNode("(+"));
+                        newcurrencycontainer.appendChild(newcurrencyspanps);
+                        newcurrencycontainer.appendChild(document.createTextNode(" per second)"));
+
+                        document.getElementById("addcurrency").append(newcurrencycontainer);
+                    });
+                }
+                function UI() {
+                    window.currencies.forEach((currency) => {
+                        currency.upgrades.forEach((upgrade) => {
+                            let upgradebtn = document.getElementById(upgrade.devname);
+                            upgradebtn.onclick = () => {
+                                BuyUpgrade(upgrade.uid, upgrade.baseid);
+                            };
+                            let newcost = upgrade.cost + upgrade.extracost();
+                            upgradebtn.textContent = upgrade.displayname + "\nCosts: " + newcost + "\nYou own: " + upgrade.amount;
+                        });
+                        let amt = currency.name + "amt";
+                        let ps = currency.name + "ps";
+                        let newcurrencycontaineramt = document.getElementById(amt);
+                        let newcurrencycontainerps = document.getElementById(ps);
+                        newcurrencycontaineramt.textContent = currency.amount;
+                        newcurrencycontainerps.textContent = currency.persecond;
+                    });
+                }
+                window.BuyUpgrade = (uid, baseid) => {
+                    if(!window.currencies[baseid]) return;
+                    if(!window.currencies[baseid].upgrades[uid]) return;
+                    if(window.currencies[baseid].amount < (window.currencies[baseid].upgrades[uid].cost + window.currencies[baseid].upgrades[uid].extracost())) return  ;
+                    window.currencies[baseid].amount -= window.currencies[baseid].upgrades[uid].cost + window.currencies[baseid].upgrades[uid].extracost();
+                    window.currencies[baseid].upgrades[uid].amount++;
+                    window.currencies[baseid].upgrades[uid].effect();      
+                }
+                UI2();
+                setInterval(() => {
+                    window.currencies.forEach((currency) => {
+                        currency.amount += currency.persecond;
+                    });
+                    UI();
+                }, 1000)
+            })
+        </script>
+    </body>
+</html>
