@@ -72,8 +72,8 @@
                                 exponent: 1,
                                 effect: function() {
                                     window.currencies[0].multiplier *= 1.5;
-                                },
-                            }
+                                }, 
+                            },
                         ],
                     }
                 ]
@@ -122,8 +122,8 @@
                         let ps = currency.name + "ps";
                         let newcurrencycontaineramt = document.getElementById(amt);
                         let newcurrencycontainerps = document.getElementById(ps);
-                        newcurrencycontaineramt.textContent = currency.amount;
-                        newcurrencycontainerps.textContent = currency.persecond;
+                        newcurrencycontaineramt.textContent = (Math.floor(currency.amount * 100) / 100);
+                        newcurrencycontainerps.textContent = (Math.floor(currency.persecond * currency.multiplier * 100) / 100);
                     });
                 }
                 window.BuyUpgrade = (uid, baseid) => {
@@ -137,10 +137,10 @@
                 UI2();
                 setInterval(() => {
                     window.currencies.forEach((currency) => {
-                        currency.amount += currency.persecond * currency.multiplier;
+                        currency.amount += 0.1 * currency.persecond * currency.multiplier;
                     });
                     UI();
-                }, 1000)
+                }, 100)
             })
         </script>
     </body>
