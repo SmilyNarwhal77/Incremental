@@ -65,13 +65,23 @@
                                 cost: 30,
                                 amount: 0,
                                 extracost: function() {
-                                    return Math.floor(Math.sqrt(parseInt((this.amount == 0) ? 0 : (this.amount) ** 3) + 28))
+                                    return Math.floor(Math.sqrt(parseInt((this.amount == 0) ? 10 : (this.amount) ** 7) + 28))
                                 },
                                 uid: 1,
                                 baseid: 0,
                                 exponent: 1,
                                 effect: function() {
-                                    window.currencies[0].multiplier *= 1.5;
+                                    //softcaps
+                                    if (window.currencies[0].upgrades[1].amount <= 10) {
+                                        window.currencies[0].multiplier *= 1.2;
+                                        return;
+                                    } else if (window.currencies[0].upgrades[1].amount <= 30) {
+                                        window.currencies[0].multiplier *= 1.1;
+                                        return;
+                                    } else {
+                                        window.currencies[0].multiplier *= 1.05;
+                                        return;
+                                    }
                                 }, 
                             },
                         ],
