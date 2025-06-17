@@ -42,20 +42,37 @@
                         amount: 0, 
                         persecond: 5, 
                         id: 0, 
+                        multiplier: 1,
                         upgrades: [
                             {
                                 devname: "a1",
                                 displayname: "The First Upgrade!",
                                 cost: 10, 
-                                amount: 0, 
+                                amount: 0,
                                 extracost: function() { 
                                     return Math.floor(Math.sqrt(parseInt((this.amount == 0) ? 0 : (this.amount) ** 3) + 8))
                                 }, 
                                 uid: 0,
                                 baseid: 0,
+                                exponent: 1,
                                 effect: function() {
-                                    window.currencies[0].persecond++;
+                                    window.currencies[0].persecond += 1;
                                 }
+                            },
+                            {
+                                devname: "a2",
+                                displayname: "First Multiplier",
+                                cost: 30,
+                                amount: 0,
+                                extracost: function() {
+                                    return Math.floor(Math.sqrt(parseInt((this.amount == 0) ? 0 : (this.amount) ** 3) + 28))
+                                },
+                                uid: 1,
+                                baseid: 0,
+                                exponent: 1,
+                                effect: function() {
+                                    window.currencies[0].multiplier *= 1.5;
+                                },
                             }
                         ],
                     }
@@ -115,12 +132,12 @@
                     if(window.currencies[baseid].amount < (window.currencies[baseid].upgrades[uid].cost + window.currencies[baseid].upgrades[uid].extracost())) return  ;
                     window.currencies[baseid].amount -= window.currencies[baseid].upgrades[uid].cost + window.currencies[baseid].upgrades[uid].extracost();
                     window.currencies[baseid].upgrades[uid].amount++;
-                    window.currencies[baseid].upgrades[uid].effect();      
+                    window.currencies[baseid].upgrades[uid].effect();
                 }
                 UI2();
                 setInterval(() => {
                     window.currencies.forEach((currency) => {
-                        currency.amount += currency.persecond;
+                        currency.amount += currency.persecond * currency.multiplier;
                     });
                     UI();
                 }, 1000)
